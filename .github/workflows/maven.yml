@@ -42,11 +42,11 @@ jobs:
         cp toolchains-gh.xml ~/.m2/toolchains.xml
         mvn -U -V -e -B -ntp clean install --file pom.xml
     - name: Run Integration Tests
-      run: mvn -U -V -e -B -ntp -Pits -Dmaven.test.failure.ignore=true clean install --file tycho-its/pom.xml
+      run: mvn -U -V -e -B -ntp -Pits -Dmaven.test.failure.ignore=true test
     - name: Upload Test Results
       uses: actions/upload-artifact@v2
       with:
         name: test-results
         if-no-files-found: error
         path: |
-          ${{ github.workspace }}/tycho-its/target/surefire-reports/*.xml
+          ${{ github.workspace }}/**/target/surefire-reports/*.xml
