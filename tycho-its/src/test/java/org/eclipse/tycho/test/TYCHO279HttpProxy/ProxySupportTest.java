@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -89,7 +88,7 @@ public class ProxySupportTest extends AbstractTychoIntegrationTest {
 		Verifier verifier = getVerifier(TEST_BASEDIR, false);
 		configureProxyInSettingsXml(true, null, null);
 		replaceSettingsArg(verifier);
-		verifier.getSystemProperties().setProperty("p2.repo", getP2RepoUrl());
+		verifier.addCliOption("-Dp2.repo=" + getP2RepoUrl());
 		verifier.executeGoal("package");
 		verifier.verifyErrorFreeLog();
 		List<String> accessedUris = proxyServlet.getAccessedUris();
@@ -107,9 +106,8 @@ public class ProxySupportTest extends AbstractTychoIntegrationTest {
 		Verifier verifier = getVerifier(TEST_BASEDIR, false);
 		configureProxyInSettingsXml(true, proxyUser, proxyPasswordEncrypted);
 		replaceSettingsArg(verifier);
-		Properties systemProperties = verifier.getSystemProperties();
-		systemProperties.setProperty("p2.repo", getP2RepoUrl());
-		systemProperties.setProperty("settings.security", new File(baseDir, "settings-security.xml").getAbsolutePath());
+		verifier.addCliOption("-Dp2.repo=" + getP2RepoUrl());
+		verifier.addCliOption("-Dsettings.security=" + new File(baseDir, "settings-security.xml").getAbsolutePath());
 		verifier.executeGoal("package");
 		verifier.verifyErrorFreeLog();
 		List<String> accessedUris = proxyServlet.getAccessedUris();
@@ -124,7 +122,7 @@ public class ProxySupportTest extends AbstractTychoIntegrationTest {
 		Verifier verifier = getVerifier(TEST_BASEDIR, false);
 		configureProxyInSettingsXml(false, null, null);
 		replaceSettingsArg(verifier);
-		verifier.getSystemProperties().setProperty("p2.repo", getP2RepoUrl());
+		verifier.addCliOption("-Dp2.repo=" + getP2RepoUrl());
 		verifier.executeGoal("package"); // build fails
 		List<String> accessedUris = proxyServlet.getAccessedUris();
 		assertTrue("proxy was accessed although not active. Accessed URIs: " + accessedUris, accessedUris.isEmpty());

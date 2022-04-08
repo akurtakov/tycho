@@ -13,7 +13,6 @@
 package org.eclipse.tycho.test.target;
 
 import java.io.File;
-import java.util.Properties;
 
 import org.apache.maven.it.Verifier;
 import org.eclipse.tycho.test.AbstractTychoIntegrationTest;
@@ -83,13 +82,12 @@ public class PasswordProtectedP2RepositoryTest extends AbstractTychoIntegrationT
 	private Verifier createVerifier(String settingsFile, String settingsSecurityFile) throws Exception {
 		Verifier verifier = getVerifier("target.httpAuthentication", false,
 				new File("projects/target.httpAuthentication/" + settingsFile));
-		Properties systemProperties = verifier.getSystemProperties();
-		systemProperties.setProperty("p2.repo", p2RepoUrl);
+		verifier.addCliOption("-Dp2.repo=" + p2RepoUrl);
 		if (settingsSecurityFile != null) {
 			// see
 			// org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher#SYSTEM_PROPERTY_SEC_LOCATION
-			systemProperties.setProperty("settings.security",
-					new File("projects/target.httpAuthentication/" + settingsSecurityFile).getAbsolutePath());
+			verifier.addCliOption("-Dsettings.security="
+					+ new File("projects/target.httpAuthentication/" + settingsSecurityFile).getAbsolutePath());
 		}
 		return verifier;
 	}
