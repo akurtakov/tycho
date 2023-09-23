@@ -77,7 +77,7 @@ public class ApiAnalysisMojo extends AbstractMojo {
 
 	static final String BUNDLE_CORE = "org.eclipse.core.runtime";
 
-	private static final String REPO_DEFAULT = "https://download.eclipse.org/releases/2023-06/";
+	private static final String REPO_DEFAULT = "https://download.eclipse.org/releases/2023-09/";
 
 	@Parameter(property = "plugin.artifacts")
 	protected List<Artifact> pluginArtifacts;

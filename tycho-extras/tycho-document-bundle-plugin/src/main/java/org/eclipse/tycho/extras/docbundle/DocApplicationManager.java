@@ -25,7 +25,7 @@ import org.eclipse.tycho.osgi.framework.EclipseApplicationFactory;
 
 @Component(role = DocApplicationManager.class)
 public class DocApplicationManager {
-	private static final String REPO_DEFAULT = "https://download.eclipse.org/releases/2023-03/";
+	private static final String REPO_DEFAULT = "https://download.eclipse.org/releases/2023-09/";
 
 	static MavenRepositoryLocation getRepository(Repository location) {
 		if (location == null) {
