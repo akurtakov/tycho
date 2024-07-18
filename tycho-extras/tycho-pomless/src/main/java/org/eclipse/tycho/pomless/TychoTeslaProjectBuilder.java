@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Christoph Läubrich and others.
+ * Copyright (c) 2023, 2024 Christoph Läubrich and others.
  * 
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,17 +23,23 @@ import org.apache.maven.project.ProjectBuilder;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.sonatype.maven.polyglot.TeslaModelProcessor;
 import org.sonatype.maven.polyglot.TeslaProjectBuilder;
 
 @Component(role = ProjectBuilder.class)
 @Priority(10)
 public class TychoTeslaProjectBuilder extends TeslaProjectBuilder implements Initializable, ProjectBuilder {
 
+    public TychoTeslaProjectBuilder(TeslaModelProcessor teslaModelProcessor,
+            DefaultProjectBuilder defaultProjectBuilder) {
+        super(teslaModelProcessor, defaultProjectBuilder);
+    }
+
     @Override
     public void initialize() throws InitializationException {
         try {
             // Workaround for https://github.com/takari/polyglot-maven/pull/256
-        	// and https://github.com/takari/polyglot-maven/pull/257
+            // and https://github.com/takari/polyglot-maven/pull/257
             Field field = DefaultProjectBuilder.class.getDeclaredField("modelCacheFactory");
             field.setAccessible(true);
             Object value = field.get(this);
