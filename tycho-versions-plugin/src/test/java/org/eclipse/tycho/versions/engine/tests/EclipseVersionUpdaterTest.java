@@ -17,18 +17,22 @@ package org.eclipse.tycho.versions.engine.tests;
 import java.io.File;
 
 import org.eclipse.tycho.testing.TestUtil;
+import org.eclipse.tycho.testing.TychoPlexusTestCase;
 import org.eclipse.tycho.versions.engine.EclipseVersionUpdater;
 import org.eclipse.tycho.versions.engine.ProjectMetadataReader;
+import org.junit.Before;
+import org.junit.Test;
 
-public class EclipseVersionUpdaterTest extends AbstractVersionChangeTest {
+public class EclipseVersionUpdaterTest extends TychoPlexusTestCase {
 
     private ProjectMetadataReader reader;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         reader = lookup(ProjectMetadataReader.class);
     }
 
+    @Test
     public void test() throws Exception {
         File basedir = TestUtil.getBasedir("projects/updateeclipse");
 
@@ -38,27 +42,27 @@ public class EclipseVersionUpdaterTest extends AbstractVersionChangeTest {
         updater.setProjects(reader.getProjects());
         updater.apply();
 
-        assertPom(new File(basedir, "bundle"));
-        assertBundleManifest(new File(basedir, "bundle"));
+        AbstractVersionChangeTest.assertPom(new File(basedir, "bundle"));
+        AbstractVersionChangeTest.assertBundleManifest(new File(basedir, "bundle"));
 
-        assertPom(new File(basedir, "feature"));
-        assertFeatureXml(new File(basedir, "feature"));
+        AbstractVersionChangeTest.assertPom(new File(basedir, "feature"));
+        AbstractVersionChangeTest.assertFeatureXml(new File(basedir, "feature"));
 
-        assertPom(new File(basedir, "product"));
-        assertProductFile(new File(basedir, "product"), "product.product");
+        AbstractVersionChangeTest.assertPom(new File(basedir, "product"));
+        AbstractVersionChangeTest.assertProductFile(new File(basedir, "product"), "product.product");
 
-        assertPom(new File(basedir, "repository"));
-        assertProductFile(new File(basedir, "repository"), "repository.product");
+        AbstractVersionChangeTest.assertPom(new File(basedir, "repository"));
+        AbstractVersionChangeTest.assertProductFile(new File(basedir, "repository"), "repository.product");
 
-        assertPom(new File(basedir, "repositoryWithOneProductFile"));
-        assertProductFile(new File(basedir, "repositoryWithOneProductFile"), "anotherNameThanArtifactId.product");
+        AbstractVersionChangeTest.assertPom(new File(basedir, "repositoryWithOneProductFile"));
+        AbstractVersionChangeTest.assertProductFile(new File(basedir, "repositoryWithOneProductFile"), "anotherNameThanArtifactId.product");
 
-        assertPom(new File(basedir, "repositoryWith2ProductFiles"));
-        assertProductFile(new File(basedir, "repositoryWith2ProductFiles"), "aProductFile.product");
-        assertProductFile(new File(basedir, "repositoryWith2ProductFiles"), "anotherProductFile.product");
+        AbstractVersionChangeTest.assertPom(new File(basedir, "repositoryWith2ProductFiles"));
+        AbstractVersionChangeTest.assertProductFile(new File(basedir, "repositoryWith2ProductFiles"), "aProductFile.product");
+        AbstractVersionChangeTest.assertProductFile(new File(basedir, "repositoryWith2ProductFiles"), "anotherProductFile.product");
 
-        assertPom(new File(basedir, "iu"));
-        assertP2IuXml(new File(basedir, ("iu")));
+        AbstractVersionChangeTest.assertPom(new File(basedir, "iu"));
+        AbstractVersionChangeTest.assertP2IuXml(new File(basedir, ("iu")));
 
     }
 }
