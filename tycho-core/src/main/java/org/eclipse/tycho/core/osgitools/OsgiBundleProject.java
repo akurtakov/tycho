@@ -415,11 +415,23 @@ public class OsgiBundleProject extends AbstractTychoProject implements BundlePro
         }
         Collection<TargetEnvironment> environments = projectManager
                 .getTargetEnvironments(project.adapt(MavenProject.class));
+        // Determine if the current project is itself a fragment, to skip sibling fragments below
+        String projectFragmentHost = getManifest(project).getFragmentHostSymbolicName();
         //Fragments are like embedded dependencies...
         for (ArtifactDescriptor fragment : artifacts.getFragments()) {
             File location = fragment.getLocation(true);
             if (location != null) {
                 OsgiManifest manifest = bundleReader.loadManifest(location);
+                // If the current project is a fragment, skip sibling fragments (other fragments
+                // with the same Fragment-Host). Sibling fragments are attached to their host
+                // bundle and must not be added as standalone extra classpath entries.
+                if (projectFragmentHost != null) {
+                    String fragmentHost = manifest.getFragmentHostSymbolicName();
+                    if (projectFragmentHost.equals(fragmentHost)) {
+                        logger.debug("Skipping sibling fragment from extra classpath: " + location);
+                        continue;
+                    }
+                }
                 Filter filter = manifest.getTargetEnvironmentFilter();
                 if (filter == null || environments.stream().anyMatch(env -> env.match(filter))) {
                     classpath.add(new DefaultClasspathEntry(null, readArtifactKey(location),

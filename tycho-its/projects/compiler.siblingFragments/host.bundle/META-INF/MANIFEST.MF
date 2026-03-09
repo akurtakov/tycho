@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Host Bundle
+Bundle-SymbolicName: host.bundle
+Bundle-Version: 1.0.0.qualifier
+Eclipse-ExtensibleAPI: true
+Export-Package: host.bundle
+Bundle-RequiredExecutionEnvironment: JavaSE-17

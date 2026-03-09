@@ -6,6 +6,17 @@ If you are reading this in the browser, then you can quickly jump to specific ve
 
 ## 6.0.0 (under development)
 
+### Fix: Sibling fragment jars no longer added to fragment bundle's extra classpath
+
+When building an OSGi fragment bundle that has sibling fragments (other bundles with the same `Fragment-Host`),
+Tycho previously incorrectly added those sibling fragments as standalone extra jar entries on the
+compile/test/runtime classpath. This caused duplicate or incorrect jars on the classpath, leading to test
+failures in projects like eclipse-platform/eclipse.platform.swt (see [#3129](https://github.com/eclipse-platform/eclipse.platform.swt/issues/3129)).
+
+The fix ensures that when a project is itself a fragment bundle, other fragments with the same `Fragment-Host`
+(sibling fragments) are skipped and not added as extra classpath entries. Sibling fragments are attached to their
+host bundle in the OSGi runtime and must not appear as independent jars on the classpath.
+
 ### new `tycho-test-plugin` for unified testing of OSGi bundles
 
 Historically Tycho has provided something similar to [maven-surefire-plugin](https://maven.apache.org/surefire/maven-surefire-plugin/) and also actually using it internally.

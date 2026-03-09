@@ -212,6 +212,20 @@ public class OsgiManifest {
         return result;
     }
 
+    /**
+     * Returns the symbolic name of the Fragment-Host bundle if this bundle is an OSGi fragment, or
+     * {@code null} if this bundle is not a fragment.
+     *
+     * @return the fragment host symbolic name, or {@code null} if not a fragment
+     */
+    public String getFragmentHostSymbolicName() {
+        ManifestElement[] elements = getManifestElements(Constants.FRAGMENT_HOST);
+        if (elements != null && elements.length > 0) {
+            return elements[0].getValue();
+        }
+        return null;
+    }
+
     public Filter getTargetEnvironmentFilter() {
         String filterStr = getValue(EclipsePlatformNamespace.ECLIPSE_PLATFORM_FILTER_HEADER);
         if (filterStr != null) {

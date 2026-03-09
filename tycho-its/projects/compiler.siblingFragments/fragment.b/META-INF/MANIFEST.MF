@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Fragment B (Sibling)
+Bundle-SymbolicName: fragment.b
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: host.bundle;bundle-version="[1.0.0,2.0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-17

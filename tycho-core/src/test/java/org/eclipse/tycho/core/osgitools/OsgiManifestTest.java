@@ -93,6 +93,18 @@ public class OsgiManifestTest {
         assertArrayEquals(new String[0], manifest.getExecutionEnvironments());
     }
 
+    @Test
+    public void testFragmentHostSymbolicName() throws Exception {
+        OsgiManifest manifest = parseManifest("fragment.mf");
+        assertEquals("org.eclipse.swt", manifest.getFragmentHostSymbolicName());
+    }
+
+    @Test
+    public void testFragmentHostSymbolicNameNotFragment() throws Exception {
+        OsgiManifest manifest = parseManifest("valid.mf");
+        assertEquals(null, manifest.getFragmentHostSymbolicName());
+    }
+
     private OsgiManifest parseManifest(String manifestName) throws URISyntaxException {
         InputStream stream = getClass().getResourceAsStream("/manifests/" + manifestName);
         return OsgiManifest.parse(stream, "testLocation");
