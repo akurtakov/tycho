@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
@@ -178,7 +179,7 @@ public class MavenTargetDefinitionContent implements TargetDefinitionContent {
                     continue;
                 }
                 String fileName = mavenArtifact.getLocation().getName();
-                if (!"jar".equalsIgnoreCase(fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1) : "")) {
+                if (!"jar".equalsIgnoreCase(FilenameUtils.getExtension(fileName))) {
                     logger.info("Skip non-jar artifact (" + fileName + ")");
                     continue;
                 }

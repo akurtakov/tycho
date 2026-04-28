@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -83,9 +84,7 @@ public class PDESourceBundleMojo extends AbstractMojo {
 
                         OsgiSourceMojo.addLocalicationHeaders(sourceMain::putValue);
 
-                        String sourceFileName = sourceFile.getName();
-                        int dot = sourceFileName.lastIndexOf('.');
-                        String baseName = dot > 0 ? sourceFileName.substring(0, dot) : sourceFileName;
+                        String baseName = FilenameUtils.getBaseName(sourceFile.getName());
                         File outputFile = new File(sourceFile.getParentFile(), baseName + "-pde.jar");
                         sourceJar.write(outputFile);
                         artifact.setFile(outputFile);

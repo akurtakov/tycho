@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -26,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.Mojo;
 import org.eclipse.sisu.PreDestroy;
 
@@ -64,13 +64,7 @@ public class DefaultEclipseWorkspaceManager implements EclipseWorkspaceManager {
     public void dispose() {
         cache.clear();
         for (EclipseWorkspace<?> workspace : toclean) {
-            File workDir = workspace.getWorkDir().toFile();
-            if (workDir.exists()) {
-                try (var paths = Files.walk(workDir.toPath())) {
-                    paths.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
-                } catch (IOException ignored) {
-                }
-            }
+            FileUtils.deleteQuietly(workspace.getWorkDir().toFile());
         }
     }
 

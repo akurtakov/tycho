@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.archiver.MavenArchiver;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
@@ -147,8 +148,7 @@ public class PackageRepositoryMojo extends AbstractMojo implements RepositoryCon
 					mavenProjectHelper.attachArtifact(project, "zip", executionId, destFile);
 				}
 			} else {
-				String repositoryName = repository.getName();
-				String extension = repositoryName.contains(".") ? repositoryName.substring(repositoryName.lastIndexOf('.') + 1) : "";
+				String extension = FilenameUtils.getExtension(repository.getName());
 				if (executionId.startsWith("default-")) {
 					Artifact artifact = project.getArtifact();
 					artifact.setArtifactHandler(new DefaultArtifactHandler(extension));

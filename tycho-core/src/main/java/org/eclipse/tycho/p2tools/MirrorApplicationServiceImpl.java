@@ -36,6 +36,7 @@ import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
@@ -462,10 +463,7 @@ public class MirrorApplicationServiceImpl implements MirrorApplicationService {
             IQueryable<IInstallableUnit> sourceMetadataRepository, File repositoryDestination, String repositoryName)
             throws FacadeException {
         if (repositoryDestination.exists()) {
-            try (var paths = Files.walk(repositoryDestination.toPath())) {
-                paths.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
-            } catch (IOException ignored) {
-            }
+            FileUtils.deleteQuietly(repositoryDestination);
         }
         //See https://github.com/eclipse-equinox/p2/pull/418
         Objects.requireNonNull(sourceArtifactRepository.getProvisioningAgent(),

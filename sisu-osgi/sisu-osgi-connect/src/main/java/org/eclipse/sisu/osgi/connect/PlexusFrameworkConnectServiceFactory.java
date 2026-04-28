@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.io.FileUtils;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Disposable;
@@ -416,13 +417,7 @@ public class PlexusFrameworkConnectServiceFactory implements Initializable, Disp
 			} finally {
 				if (!connect.foreign && storagePath != null) {
 					// try delete always whatever happens to not leave garbage around!
-					File storageDir = new File(storagePath);
-					if (storageDir.exists()) {
-						try (var paths = Files.walk(storageDir.toPath())) {
-							paths.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
-						} catch (IOException ignored) {
-						}
-					}
+					FileUtils.deleteQuietly(new File(storagePath));
 				}
 			}
 			return true;

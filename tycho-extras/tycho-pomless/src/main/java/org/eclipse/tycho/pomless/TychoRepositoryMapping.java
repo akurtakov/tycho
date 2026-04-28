@@ -29,6 +29,7 @@ import java.util.Optional;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
@@ -82,8 +83,7 @@ public class TychoRepositoryMapping extends AbstractXMLTychoMapping {
                             productXml = parseXML(reader, file.toURI().toASCIIString());
                         }
                         String fileName = file.getName();
-                        int dot = fileName.lastIndexOf('.');
-                        String baseName = dot > 0 ? fileName.substring(0, dot) : fileName;
+                        String baseName = FilenameUtils.getBaseName(fileName);
                         String name = getXMLAttributeValue(productXml, PRODUCT_NAME_ATTRIBUTE);
                         names.add(null == name ? baseName : name);
                         addProduct(directorPlugin, productXml, baseName);

@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
@@ -64,8 +65,7 @@ public class RepositoryArtifactCoordinateResolver implements ArtifactCoordinateR
 				String groupId = properties.getProperty("groupId");
 				String version = properties.getProperty("version");
 				if (artifactId != null && groupId != null && version != null) {
-					String fileName = path.getFileName().toString();
-					String type = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1) : "";
+					String type = FilenameUtils.getExtension(path.getFileName().toString());
 					Artifact artifact = new DefaultArtifact(groupId, artifactId, type, version);
 					ArtifactRequest artifactRequest = new ArtifactRequest();
 					artifactRequest.setArtifact(artifact);
@@ -115,9 +115,8 @@ public class RepositoryArtifactCoordinateResolver implements ArtifactCoordinateR
 						try (InputStream stream = jarFile.getInputStream(jarEntry)) {
 							Properties properties = new Properties();
 							properties.load(stream);
-							String fileName = path.getFileName().toString();
 							properties.setProperty("file-type",
-									fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1) : "");
+									FilenameUtils.getExtension(path.getFileName().toString()));
 							return properties;
 						}
 					}

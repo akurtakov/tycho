@@ -35,7 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-
+import org.apache.commons.io.FilenameUtils;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.MatchPatterns;
 import org.eclipse.tycho.artifactcomparator.ArtifactComparator;
@@ -151,8 +151,7 @@ public class ZipComparatorImpl implements ArtifactComparator {
     }
 
     private ContentsComparator getContentsComparator(String name) {
-        int dot = name.lastIndexOf('.');
-        String extension = (dot >= 0 ? name.substring(dot + 1) : "").toLowerCase();
+        String extension = FilenameUtils.getExtension(name).toLowerCase();
         ContentsComparator comparator = comparators.get(extension);
         if (comparator != null) {
             return comparator;

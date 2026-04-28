@@ -12,10 +12,8 @@
  *******************************************************************************/
 package org.eclipse.sisu.osgi.connect;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -23,6 +21,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarFile;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.logging.Logger;
@@ -48,7 +47,7 @@ final class DummyClassRealm extends ClassRealm {
 			List<String> filters;
 			if (stream != null) {
 				try {
-					filters = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).lines().toList();
+					filters = IOUtils.readLines(stream, StandardCharsets.UTF_8);
 					stream.close();
 				} catch (IOException e) {
 					filters = null;

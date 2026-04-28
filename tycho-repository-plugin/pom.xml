@@ -54,6 +54,10 @@
 			<artifactId>plexus-archiver</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.tycho</groupId>
 			<artifactId>tycho-spi</artifactId>
 			<version>${project.version}</version>

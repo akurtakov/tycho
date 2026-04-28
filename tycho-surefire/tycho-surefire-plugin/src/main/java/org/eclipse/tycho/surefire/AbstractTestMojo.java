@@ -21,12 +21,9 @@ package org.eclipse.tycho.surefire;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,6 +35,8 @@ import java.util.stream.IntStream;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -238,12 +237,7 @@ public abstract class AbstractTestMojo extends AbstractMojo {
             runTests(result);
         } finally {
             if (deleteWorkDirAfterTest) {
-                if (work.exists()) {
-                    try (var paths = Files.walk(work.toPath())) {
-                        paths.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
-                    } catch (IOException ignored) {
-                    }
-                }
+                FileUtils.deleteQuietly(work);
             }
         }
     }
@@ -337,9 +331,7 @@ public abstract class AbstractTestMojo extends AbstractMojo {
     protected Optional<ResolvedArtifactKey> createTestPluginJar(final ReactorProject reactorProject,
             String packageImport, ScanResult scanResult) throws Exception {
         final var uuid = UUID.randomUUID();
-        final var artifactName = reactorProject.getArtifact().getName();
-        final int dot = artifactName.lastIndexOf('.');
-        final var artifactBaseName = dot > 0 ? artifactName.substring(0, dot) : artifactName;
+        final var artifactBaseName = FilenameUtils.getBaseName(reactorProject.getArtifact().getName());
         final var testJarName = artifactBaseName + "-test-" + uuid + ".jar";
         final var fragmentFile = new File(project.getBuild().getDirectory(), testJarName);
 

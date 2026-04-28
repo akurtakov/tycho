@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureParser;
 import org.eclipse.equinox.internal.p2.repository.Transport;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
@@ -86,8 +87,7 @@ public class RepositoryLocationContent implements TargetDefinitionContent {
             logger.info("Loading " + url + "...");
             try {
                 File file = tychoTransport.downloadToFile(url);
-                String fileName = file.getName();
-                if (!"jar".equalsIgnoreCase(fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1) : "")) {
+                if (!"jar".equalsIgnoreCase(FilenameUtils.getExtension(file.getName()))) {
                     logger.info("Skip non-jar artifact (" + file + ")");
                     continue;
                 }
