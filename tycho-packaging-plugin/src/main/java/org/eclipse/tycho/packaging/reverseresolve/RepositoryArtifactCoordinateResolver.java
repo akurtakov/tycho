@@ -64,8 +64,8 @@ public class RepositoryArtifactCoordinateResolver implements ArtifactCoordinateR
 				String groupId = properties.getProperty("groupId");
 				String version = properties.getProperty("version");
 				if (artifactId != null && groupId != null && version != null) {
-					String pathFileName = path.getFileName().toString();
-				String type = pathFileName.contains(".") ? pathFileName.substring(pathFileName.lastIndexOf('.') + 1) : "";
+					String fileName = path.getFileName().toString();
+					String type = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1) : "";
 					Artifact artifact = new DefaultArtifact(groupId, artifactId, type, version);
 					ArtifactRequest artifactRequest = new ArtifactRequest();
 					artifactRequest.setArtifact(artifact);
@@ -115,9 +115,9 @@ public class RepositoryArtifactCoordinateResolver implements ArtifactCoordinateR
 						try (InputStream stream = jarFile.getInputStream(jarEntry)) {
 							Properties properties = new Properties();
 							properties.load(stream);
-							String fn = path.getFileName().toString();
+							String fileName = path.getFileName().toString();
 							properties.setProperty("file-type",
-									fn.contains(".") ? fn.substring(fn.lastIndexOf('.') + 1) : "");
+									fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1) : "");
 							return properties;
 						}
 					}

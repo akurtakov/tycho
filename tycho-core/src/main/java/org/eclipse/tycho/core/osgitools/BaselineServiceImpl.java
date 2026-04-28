@@ -144,7 +144,7 @@ public class BaselineServiceImpl implements BaselineService {
         if (location != null) {
             String name = location.getName();
             int dot = name.lastIndexOf('.');
-            String extension = dot >= 0 ? name.substring(dot + 1) : "";
+            String extension = dot > 0 ? name.substring(dot + 1) : "";
             if (!extension.isBlank()) {
                 return "." + extension;
             }
