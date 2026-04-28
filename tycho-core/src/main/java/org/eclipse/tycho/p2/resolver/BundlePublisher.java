@@ -14,12 +14,13 @@ package org.eclipse.tycho.p2.resolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactDescriptor;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepositoryFactory;
@@ -108,7 +109,10 @@ public class BundlePublisher extends BundlesAction {
     public static void createBundleRepository(File repositoryLocation, String name, File[] files,
             IProgressMonitor monitor) throws ProvisionException {
         if (repositoryLocation.exists()) {
-            FileUtils.deleteQuietly(repositoryLocation);
+            try (var paths = Files.walk(repositoryLocation.toPath())) {
+                paths.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+            } catch (IOException ignored) {
+            }
         }
         SimpleMetadataRepositoryFactory metadataRepositoryFactory = new SimpleMetadataRepositoryFactory();
         SimpleArtifactRepositoryFactory artifactRepositoryFactory = new SimpleArtifactRepositoryFactory();

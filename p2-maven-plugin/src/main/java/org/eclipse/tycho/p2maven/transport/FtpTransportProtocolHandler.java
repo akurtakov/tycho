@@ -11,11 +11,12 @@ import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPCmd;
@@ -100,8 +101,8 @@ public class FtpTransportProtocolHandler implements TransportProtocolHandler, Di
                 throw new FileNotFoundException("Could not find file: " + uri);
             }
 
-            final File parent = FileUtils.createParentDirectories(localFile);
-            final File tempFile = Files.createTempFile(parent.toPath(), "download", ".tmp").toFile();
+            final Path parent = Files.createDirectories(localFile.toPath().getParent());
+            final File tempFile = Files.createTempFile(parent, "download", ".tmp").toFile();
             tempFile.deleteOnExit();
 
 			try (final OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile))) {
@@ -115,10 +116,10 @@ public class FtpTransportProtocolHandler implements TransportProtocolHandler, Di
             }
 
             if (localFile.isFile()) {
-                FileUtils.forceDelete(localFile);
+                Files.delete(localFile.toPath());
             }
 
-            FileUtils.moveFile(tempFile, localFile);
+            Files.move(tempFile.toPath(), localFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             localFile.setLastModified(remoteFile.getTimestampInstant().toEpochMilli());
             return localFile;
         }

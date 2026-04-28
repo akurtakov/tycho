@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +41,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.commons.io.FileUtils;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.equinox.internal.p2.repository.AuthenticationFailedException;
 import org.eclipse.tycho.ReproducibleUtils;
@@ -275,12 +276,12 @@ public class SharedHttpCacheStorage implements HttpCache {
 						// Once https://github.com/eclipse-equinox/p2/issues/355 is fixed, cachedFile
 						// may be returned directly without copying.
 						response.close(); // early close before doing unrelated file I/O
-						FileUtils.copyFile(cachedFile, file);
+						Files.copy(cachedFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						return file;
 					}
 				}
 				if (exists) {
-					FileUtils.forceDelete(file);
+					Files.delete(file.toPath());
 				}
 				response.checkResponseCode();
 				tempFile = File.createTempFile("download", ".tmp", file.getParentFile());
@@ -291,7 +292,7 @@ public class SharedHttpCacheStorage implements HttpCache {
 					throw e;
 				}
 				response.close(); // early close before doing file I/O
-				FileUtils.moveFile(tempFile, file);
+				Files.move(tempFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				return file;
 			});
 

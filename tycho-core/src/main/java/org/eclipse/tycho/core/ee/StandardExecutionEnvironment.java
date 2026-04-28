@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +32,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.toolchain.Toolchain;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.osgi.internal.framework.EquinoxConfiguration;
@@ -156,7 +157,7 @@ public class StandardExecutionEnvironment implements Comparable<StandardExecutio
         companionFile.deleteOnExit();
         try (InputStream contents = ListSystemPackages.class.getClassLoader()
                 .getResourceAsStream("system-packages-companion.jar")) {
-            FileUtils.copyToFile(contents, companionFile);
+            Files.copy(contents, companionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         return companionFile;
     }

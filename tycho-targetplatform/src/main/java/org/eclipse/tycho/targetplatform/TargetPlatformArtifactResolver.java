@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
@@ -70,7 +69,9 @@ public interface TargetPlatformArtifactResolver {
 			return targetFiles[0];
 		}
 		for (File targetFile : targetFiles) {
-			String baseName = FilenameUtils.getBaseName(targetFile.getName());
+			String targetFileName = targetFile.getName();
+			int dot = targetFileName.lastIndexOf('.');
+			String baseName = dot > 0 ? targetFileName.substring(0, dot) : targetFileName;
 			if (baseName.equalsIgnoreCase(project.getArtifactId())) {
 				return targetFile;
 			}

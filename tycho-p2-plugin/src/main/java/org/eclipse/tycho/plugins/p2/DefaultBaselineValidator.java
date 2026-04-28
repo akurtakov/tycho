@@ -21,6 +21,7 @@ import static org.eclipse.tycho.plugins.p2.BaselineReplace.none;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,7 +34,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -158,7 +158,10 @@ public class DefaultBaselineValidator implements BaselineValidator {
                                         .filter(a -> !classifier.equals(a.getClassifier()))
                                         .collect(Collectors.toCollection(ArrayList::new));
                                 try {
-                                    MethodUtils.invokeMethod(project, true, "setAttachedArtifacts", list);
+                                    Method setAttachedArtifacts = project.getClass()
+                                            .getDeclaredMethod("setAttachedArtifacts", List.class);
+                                    setAttachedArtifacts.setAccessible(true);
+                                    setAttachedArtifacts.invoke(project, list);
                                 } catch (ReflectiveOperationException ignored) {
                                     log.warn("The attached artifact " + classifier
                                             + " is not present in the baseline, but could not be removed");

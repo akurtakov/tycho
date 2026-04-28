@@ -17,7 +17,6 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -49,7 +48,9 @@ public class PackageTargetDefinitionMojo extends AbstractMojo {
             if (DefaultTargetPlatformConfigurationReader.isPrimaryTarget(project, targetFile, targetFiles)) {
                 project.getArtifact().setFile(targetFile);
             } else {
-                projectHelper.attachArtifact(project, targetFile, FilenameUtils.getBaseName(targetFile.getName()));
+                String targetFileName = targetFile.getName();
+                int dot = targetFileName.lastIndexOf('.');
+                projectHelper.attachArtifact(project, targetFile, dot > 0 ? targetFileName.substring(0, dot) : targetFileName);
             }
         }
         if (project.getArtifact().getFile() == null) {

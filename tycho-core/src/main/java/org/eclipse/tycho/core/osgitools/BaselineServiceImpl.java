@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.model.Repository;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -143,7 +142,9 @@ public class BaselineServiceImpl implements BaselineService {
     private String getExtension(IP2Artifact value) {
         File location = value.getLocation();
         if (location != null) {
-            String extension = FilenameUtils.getExtension(location.getName());
+            String name = location.getName();
+            int dot = name.lastIndexOf('.');
+            String extension = dot >= 0 ? name.substring(dot + 1) : "";
             if (!extension.isBlank()) {
                 return "." + extension;
             }

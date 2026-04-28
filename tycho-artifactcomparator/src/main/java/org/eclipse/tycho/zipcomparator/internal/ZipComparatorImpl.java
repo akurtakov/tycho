@@ -35,8 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
+
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.MatchPatterns;
 import org.eclipse.tycho.artifactcomparator.ArtifactComparator;
@@ -82,7 +81,7 @@ public class ZipComparatorImpl implements ArtifactComparator {
             log.debug("Comparing baseline=" + baseline + " with reactor=" + reactor + " failed: " + e
                     + " using direct byte compare!", e);
             //this can happen if we compare files that seem zip files but are actually not, for example an embedded jar can be an (empty) dummy file... in this case we should fall back to dumb byte compare (better than fail...)
-            if (FileUtils.contentEquals(baseline, reactor)) {
+            if (Files.mismatch(baseline.toPath(), reactor.toPath()) == -1L) {
                 return null;
             }
             return ArtifactDelta.DEFAULT;
@@ -152,7 +151,8 @@ public class ZipComparatorImpl implements ArtifactComparator {
     }
 
     private ContentsComparator getContentsComparator(String name) {
-        String extension = FilenameUtils.getExtension(name).toLowerCase();
+        int dot = name.lastIndexOf('.');
+        String extension = (dot >= 0 ? name.substring(dot + 1) : "").toLowerCase();
         ContentsComparator comparator = comparators.get(extension);
         if (comparator != null) {
             return comparator;

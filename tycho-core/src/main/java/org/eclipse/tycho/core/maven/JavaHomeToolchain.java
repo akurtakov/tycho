@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.toolchain.java.JavaToolchain;
 import org.eclipse.tycho.TargetEnvironment;
 
@@ -43,9 +42,13 @@ final class JavaHomeToolchain implements JavaToolchain {
             }
             //last resort just in case other extension or case-sensitive file-system...
             try (var files = Files.list(bin).filter(Files::isRegularFile)) {
-                return files.map(Path::toString)
-                        .filter(pathname -> FilenameUtils.getBaseName(pathname).equalsIgnoreCase(toolName)).findFirst()
-                        .orElse(null);
+                return files
+                        .filter(p -> {
+                            String fn = p.getFileName().toString();
+                            int dot = fn.lastIndexOf('.');
+                            return (dot > 0 ? fn.substring(0, dot) : fn).equalsIgnoreCase(toolName);
+                        })
+                        .map(Path::toString).findFirst().orElse(null);
             } catch (IOException e) {
             }
         }

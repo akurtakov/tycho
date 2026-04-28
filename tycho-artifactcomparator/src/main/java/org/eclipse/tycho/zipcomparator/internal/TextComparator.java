@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.tycho.zipcomparator.internal;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +23,6 @@ import java.util.stream.Collectors;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.tycho.artifactcomparator.ArtifactComparator.ComparisonData;
 import org.eclipse.tycho.artifactcomparator.ArtifactDelta;
 import org.eclipse.tycho.artifactcomparator.ComparatorInputStream;
@@ -114,8 +115,8 @@ public class TextComparator implements ContentsComparator {
         if (data.showDiffDetails()) {
             String detailed;
             try {
-                List<String> source = IOUtils.readLines(baseline.asNewStream(), StandardCharsets.UTF_8);
-                List<String> target = IOUtils.readLines(reactor.asNewStream(), StandardCharsets.UTF_8);
+                List<String> source = new BufferedReader(new InputStreamReader(baseline.asNewStream(), StandardCharsets.UTF_8)).lines().toList();
+                List<String> target = new BufferedReader(new InputStreamReader(reactor.asNewStream(), StandardCharsets.UTF_8)).lines().toList();
                 Patch<String> patch = DiffUtils.diff(source, target);
                 List<String> unifiedDiffList = UnifiedDiffUtils.generateUnifiedDiff("baseline", "reactor", source,
                         patch, 0);

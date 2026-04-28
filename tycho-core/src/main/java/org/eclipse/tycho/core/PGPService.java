@@ -20,6 +20,8 @@ import java.io.InterruptedIOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +31,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
@@ -115,7 +116,7 @@ public class PGPService {
             URL url = new URL(MessageFormat.format(keyServerUrl, hexKey));
             logger.debug("Fetching key from url: " + url);
             InputStream urlStream = openStream(url, keyServerRetry);
-            FileUtils.copyInputStreamToFile(urlStream, keyCacheFile);
+            Files.copy(urlStream, keyCacheFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             keyStream = new FileInputStream(keyCacheFile);
         }
         try {

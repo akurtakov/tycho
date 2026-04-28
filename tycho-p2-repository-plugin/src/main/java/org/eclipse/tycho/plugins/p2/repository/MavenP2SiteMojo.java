@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.archiver.MavenArchiver;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
@@ -461,8 +460,9 @@ public class MavenP2SiteMojo extends AbstractMojo {
         try {
             File fileList = File.createTempFile(name, ".txt");
             fileList.deleteOnExit();
-            FileUtils.writeLines(fileList, StandardCharsets.UTF_8.name(),
-                    files.stream().map(f -> f == null ? "" : f.getAbsolutePath()).toList());
+            Files.write(fileList.toPath(),
+                    files.stream().map(f -> f == null ? "" : f.getAbsolutePath()).toList(),
+                    StandardCharsets.UTF_8);
             return fileList;
         } catch (IOException e) {
             throw new MojoExecutionException("failed to generate " + name + " list", e);

@@ -13,9 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.execution.DefaultMavenExecutionRequestPopulator;
 import org.apache.maven.execution.MavenExecutionRequestPopulationException;
 import org.apache.maven.execution.MavenSession;
@@ -62,6 +62,8 @@ public class MavenDependenciesResolverTest extends AbstractMojoTestCase {
                         .toList(),
                 session);
         assertEquals(deps.toString(), 1, deps.size());
-        FileUtils.deleteDirectory(localRepo);
+        try (var paths = Files.walk(localRepo.toPath())) {
+            paths.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+        }
     }
 }

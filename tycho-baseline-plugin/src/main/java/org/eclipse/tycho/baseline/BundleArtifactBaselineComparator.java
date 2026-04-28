@@ -32,7 +32,6 @@ import java.util.function.Function;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
@@ -448,7 +447,8 @@ public class BundleArtifactBaselineComparator implements ArtifactBaselineCompara
 	}
 
 	private ContentsComparator getComparator(String name) {
-		String extension = FilenameUtils.getExtension(name).toLowerCase();
+		int dot = name.lastIndexOf('.');
+		String extension = (dot >= 0 ? name.substring(dot + 1) : "").toLowerCase();
 		ContentsComparator comparator = contentComparators.get(extension);
 		if (comparator == null) {
 			for (ContentsComparator alternative : contentComparators.values()) {

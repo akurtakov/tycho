@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Repository;
@@ -605,7 +604,8 @@ public class DefaultTargetPlatformConfigurationReader {
         }
         String name = targetFile.getName();
         if (name.toLowerCase().endsWith(TargetDefinitionFile.FILE_EXTENSION)) {
-            String baseName = FilenameUtils.getBaseName(name);
+            int dot = name.lastIndexOf('.');
+            String baseName = dot > 0 ? name.substring(0, dot) : name;
             if (baseName.equalsIgnoreCase(project.getArtifactId())) {
                 return true;
             }

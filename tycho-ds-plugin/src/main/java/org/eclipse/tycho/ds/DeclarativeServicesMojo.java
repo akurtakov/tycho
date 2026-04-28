@@ -19,7 +19,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -228,7 +227,7 @@ public class DeclarativeServicesMojo extends AbstractMojo {
 					int generated = 0;
 					int keep = 0;
 					for (String component : components.split(",\\s*")) {
-						String name = FilenameUtils.getName(component);
+						String name = new File(component).getName();
 						if (new File(projectBaseDir, name).isFile()) {
 							// this is an exiting component definition, we should not mess with that...
 							keep++;

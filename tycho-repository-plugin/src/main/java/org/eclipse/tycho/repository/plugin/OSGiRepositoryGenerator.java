@@ -17,10 +17,10 @@ import static aQute.bnd.osgi.Constants.MIME_TYPE_BUNDLE;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -51,8 +51,9 @@ public class OSGiRepositoryGenerator implements RepositoryGenerator {
 		PlexusConfiguration generatorConfig = repoConfig.getConfiguration();
 		String repositoryFileName = generatorConfig.getChild("repositoryFileName").getValue("repository.xml");
 		if (repoConfig.getLayout() == RepositoryLayout.local) {
-			String folderName = generatorConfig.getChild("repositoryFolderName")
-					.getValue(FilenameUtils.getBaseName(repositoryFileName));
+			int dot = repositoryFileName.lastIndexOf('.');
+			String defaultFolderName = dot > 0 ? repositoryFileName.substring(0, dot) : repositoryFileName;
+			String folderName = generatorConfig.getChild("repositoryFolderName").getValue(defaultFolderName);
 			folder = new File(repoConfig.getDestination(), folderName);
 			folder.mkdirs();
 			resourceGenerator.base(folder.toURI());
@@ -83,7 +84,7 @@ public class OSGiRepositoryGenerator implements RepositoryGenerator {
 					rb.addCapability(identity);
 					resourceGenerator.resource(rb.build());
 					if (folder != null) {
-						FileUtils.copyFileToDirectory(file, folder);
+						Files.copy(file.toPath(), folder.toPath().resolve(file.getName()), StandardCopyOption.REPLACE_EXISTING);
 					}
 				} else {
 					log.info("Skip " + project.getId() + ": Not a bundle");
