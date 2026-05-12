@@ -78,7 +78,8 @@ public class MirroringArtifactProviderErrorTest extends TychoPlexusTestCase {
     @Test
     public void testBrokenLocalArtifactIsRemovedOnFailedMirror() throws Exception {
         File localArtifactFile = new File(tempLocalMavenRepository.getLocalRepositoryRoot(), localRepoPathOf(CORRUPT_ARTIFACT));
-        assertTrue(localArtifactFile.getParentFile().mkdirs() || localArtifactFile.getParentFile().isDirectory());
+        assertTrue("Failed to create parent directory",
+                localArtifactFile.getParentFile().mkdirs() || localArtifactFile.getParentFile().isDirectory());
         Files.writeString(localArtifactFile.toPath(), "broken", StandardCharsets.UTF_8);
         assertTrue(localArtifactFile.isFile());
 

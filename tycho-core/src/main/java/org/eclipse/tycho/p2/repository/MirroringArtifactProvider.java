@@ -261,7 +261,8 @@ public class MirroringArtifactProvider implements IRawArtifactFileProvider {
                             return true;
                         }
                         if (!artifactFile.delete() && artifactFile.exists()) {
-                            logger.warn("Failed to remove broken artifact file " + artifactFile.getAbsolutePath());
+                            logger.warn("Failed to remove broken artifact file at " + artifactFile.getAbsolutePath()
+                                    + ". This may cause subsequent download attempts to fail.");
                         }
                     }
                     downloadArtifact(key);
