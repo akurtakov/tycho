@@ -17,6 +17,11 @@ import static org.eclipse.tycho.test.util.ProbeArtifactSink.newArtifactSinkFor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
@@ -70,8 +75,26 @@ public class MirroringArtifactProviderErrorTest extends TychoPlexusTestCase {
         assertFalse(testSink.writeIsStarted());
     }
 
+    @Test
+    public void testBrokenLocalArtifactIsRemovedOnFailedMirror() throws Exception {
+        File localArtifactFile = new File(tempLocalMavenRepository.getLocalRepositoryRoot(), localRepoPathOf(CORRUPT_ARTIFACT));
+        assertTrue(localArtifactFile.getParentFile().mkdirs() || localArtifactFile.getParentFile().isDirectory());
+        Files.writeString(localArtifactFile.toPath(), "broken", StandardCharsets.UTF_8);
+        assertTrue(localArtifactFile.isFile());
+
+        testSink = newArtifactSinkFor(CORRUPT_ARTIFACT);
+        assertThrows(MirroringFailedException.class, () -> subject.getArtifact(testSink, null));
+
+        assertFalse("broken local artifact file should be removed", localArtifactFile.exists());
+    }
+
     private void assertNotMirrored(IArtifactKey key) {
         assertEquals(0, localRepository.getArtifactDescriptors(key).length);
+    }
+
+    private static String localRepoPathOf(IArtifactKey key) {
+        return "p2/" + key.getClassifier().replace('.', '/') + "/" + key.getId() + "/" + key.getVersion() + "/"
+                + key.getId() + "-" + key.getVersion() + ".jar";
     }
 
 }
